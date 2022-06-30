@@ -1826,6 +1826,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_accordion__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./modules/accordion */ "./src/js/modules/accordion.js");
 /* harmony import */ var _modules_burger__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./modules/burger */ "./src/js/modules/burger.js");
 /* harmony import */ var _modules_scrolling__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./modules/scrolling */ "./src/js/modules/scrolling.js");
+/* harmony import */ var _modules_drop__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./modules/drop */ "./src/js/modules/drop.js");
+
 
 
 
@@ -1857,6 +1859,7 @@ window.addEventListener('DOMContentLoaded', () => {
   );
   Object(_modules_burger__WEBPACK_IMPORTED_MODULE_10__["default"])('.burger-menu', '.burger');
   Object(_modules_scrolling__WEBPACK_IMPORTED_MODULE_11__["default"])('.pageup');
+  Object(_modules_drop__WEBPACK_IMPORTED_MODULE_12__["default"])();
 });
 
 /***/ }),
@@ -2000,6 +2003,81 @@ const checkTextInputs = selector => {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (checkTextInputs);
+
+/***/ }),
+
+/***/ "./src/js/modules/drop.js":
+/*!********************************!*\
+  !*** ./src/js/modules/drop.js ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+const drop = () => {
+  //drag*
+  //dragend*
+  //dragenter - обьект над dropArea
+  //dragexit*
+  //dragleave - обьект за пределами dropArea
+  //dragover - обьект протаскивают над dropArea(каждые 100ms) 
+  //dragstart*
+  //drop - обьект отправлен в dropArea(отпустили кнопку мыши)
+  const fileInputs = document.querySelectorAll('[name = "upload"]');
+  ['dragenter', 'dragleave', 'dragover', 'drop'].forEach(eventName => {
+    fileInputs.forEach(input => {
+      input.addEventListener(eventName, preventDefaults, false);
+    });
+  });
+
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  function highLight(item) {
+    item.closest('.file_upload').style.border = '5px solid cyan';
+    item.closest('.file_upload').style.backgroundColor = 'rgba(0,0,0,0.5)';
+  }
+
+  function unhighLight(item) {
+    item.closest('.file_upload').style.border = 'none';
+
+    if (item.closest('.calc_form')) {
+      item.closest('.file_upload').style.backgroundColor = '#fff';
+    } else {
+      item.closest('.file_upload').style.backgroundColor = '#ededed';
+    }
+  }
+
+  ['dragenter', 'dragover'].forEach(eventName => {
+    fileInputs.forEach(input => {
+      input.addEventListener(eventName, () => {
+        highLight(input);
+      });
+    });
+  });
+  ['dragleave', 'drop'].forEach(eventName => {
+    fileInputs.forEach(input => {
+      input.addEventListener(eventName, () => {
+        unhighLight(input);
+      });
+    });
+  });
+  fileInputs.forEach(input => {
+    input.addEventListener('drop', e => {
+      input.files = e.dataTransfer.files;
+      let dots;
+      const arr = input.files[0].name.split('.');
+      arr[0].length > 6 ? dots = '...' : dots = '.';
+      const name = arr[0].substring(0, 6) + dots + arr[1];
+      input.previousElementSibling.textContent = name;
+    });
+  });
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (drop);
 
 /***/ }),
 
